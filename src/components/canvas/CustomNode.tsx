@@ -21,7 +21,7 @@ export function CustomNode({ data, selected }: NodeProps) {
         return String(nodeData.config.recipient || "");
       case "amazon":
         return String(
-          `${nodeData.config.metric} / ${nodeData.config.timeframe} Days` || ""
+          `${nodeData.config.metric || ""} / ${nodeData.config.timeframe || ""} Days`
         );
       case "slack":
         return String(nodeData.config.channel || "");
