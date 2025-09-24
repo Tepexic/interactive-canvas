@@ -24,20 +24,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Base light theme */
 html,
 body {
   background-color: #f9fafb;
   color: #111827;
 }
-
-/* Dark theme */
-html.dark,
-body.dark {
-  background-color: #111827;
-  color: #ffffff;
-}
-
 a {
   font-weight: 500;
   color: #646cff;
@@ -54,12 +45,6 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
-
-/* h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-} */
-
 /* Remove default button styling to let Tailwind handle it */
 button {
   font-family: inherit;
