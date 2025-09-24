@@ -8,10 +8,10 @@ import type {
   Connection,
 } from "@xyflow/react";
 import type { CustomNodeData } from "@/types/canvas";
-import { 
-  saveCanvasState, 
-  loadCanvasState, 
-  debounce 
+import {
+  saveCanvasState,
+  loadCanvasState,
+  debounce,
 } from "@/utils/localStorage";
 
 export interface CanvasState {
@@ -40,18 +40,12 @@ export interface CanvasState {
 const initializeStore = () => {
   const savedState = loadCanvasState();
   if (savedState) {
-    console.log("📦 Loaded canvas state from localStorage:", {
-      nodes: savedState.nodes.length,
-      edges: savedState.edges.length,
-      version: savedState.version,
-      timestamp: new Date(savedState.timestamp).toISOString()
-    });
     return {
       nodes: savedState.nodes,
       edges: savedState.edges,
     };
   }
-  console.log("🆕 Starting with empty canvas - no saved state found");
+
   return {
     nodes: [] as Node<CustomNodeData>[],
     edges: [] as Edge[],
@@ -60,25 +54,24 @@ const initializeStore = () => {
 
 // Persistence helpers
 const persistState = (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
-  console.log("💾 Saving canvas state:", { nodes: nodes.length, edges: edges.length });
   saveCanvasState(nodes, edges);
 };
-
-// Debounced save for position changes (1 second delay)
-const debouncedSave = debounce((nodes: Node<CustomNodeData>[], edges: Edge[]) => {
-  console.log("⏱️ Debounced save triggered");
-  persistState(nodes, edges);
-}, 1000);
+// Debounced save for position changes (4 second delay)
+const debouncedSave = debounce(
+  (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
+    persistState(nodes, edges);
+  },
+  4000
+);
 
 // Immediate save for critical operations
 const immediateSave = (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
-  console.log("⚡ Immediate save triggered");
   persistState(nodes, edges);
 };
 
 export const useCanvasStore = create<CanvasState>((set, get) => {
   const initialState = initializeStore();
-  
+
   return {
     isPlaying: false,
     nodes: initialState.nodes,
@@ -89,18 +82,23 @@ export const useCanvasStore = create<CanvasState>((set, get) => {
       set({ nodes });
       immediateSave(nodes, get().edges);
     },
-    
+
     setEdges: (edges) => {
       set({ edges });
       immediateSave(get().nodes, edges);
     },
 
     onNodesChange: (changes) => {
-      const newNodes = applyNodeChanges(changes, get().nodes) as Node<CustomNodeData>[];
+      const newNodes = applyNodeChanges(
+        changes,
+        get().nodes
+      ) as Node<CustomNodeData>[];
       set({ nodes: newNodes });
-      
+
       // Check if any nodes were deleted (immediate save)
-      const hasDeletedNodes = changes.some(change => change.type === 'remove');
+      const hasDeletedNodes = changes.some(
+        (change) => change.type === "remove"
+      );
       if (hasDeletedNodes) {
         immediateSave(newNodes, get().edges);
       } else {
