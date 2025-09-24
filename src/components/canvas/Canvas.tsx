@@ -4,6 +4,7 @@ import {
   Controls,
   MiniMap,
   ConnectionLineType,
+  ConnectionMode,
   type Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -94,9 +95,12 @@ export default function Canvas() {
           onConnect={onConnect}
           onNodeClick={onNodeClick}
           onPaneClick={onPaneClick}
+          connectionMode={ConnectionMode.Loose}
           fitView
           connectionLineType={ConnectionLineType.SmoothStep}
-          defaultEdgeOptions={{}}
+          defaultEdgeOptions={{
+            animated: isPlaying,
+          }}
           // Disable editing
           nodesDraggable={!isPlaying}
           nodesConnectable={!isPlaying}
