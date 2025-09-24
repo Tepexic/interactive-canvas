@@ -2,17 +2,17 @@ import { Handle, Position } from "@xyflow/react";
 import type { NodeProps } from "@xyflow/react";
 import type { CustomNodeData } from "@/types/canvas";
 import { useState, useCallback } from "react";
-import { 
-  TrashIcon, 
-  Cog6ToothIcon, 
-  ArrowsUpDownIcon 
+import {
+  TrashIcon,
+  Cog6ToothIcon,
+  ArrowsUpDownIcon,
 } from "@heroicons/react/24/outline";
 import { useCanvasStore } from "@/stores/canvasStore";
 
 export function CustomNode({ data, selected }: NodeProps) {
   const nodeData = data as CustomNodeData;
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const { deleteNode, toggleNodeHandles, setSelectedNode } = useCanvasStore();
 
   const relevantNodeInfo = (): string => {
@@ -36,24 +36,34 @@ export function CustomNode({ data, selected }: NodeProps) {
       : { source: Position.Bottom, target: Position.Top };
   };
 
-  const { source: sourcePosition, target: targetPosition } = getHandlePositions();
+  const { source: sourcePosition, target: targetPosition } =
+    getHandlePositions();
 
   // Button handlers
-  const handleDelete = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    deleteNode(nodeData.id);
-  }, [deleteNode, nodeData.id]);
+  const handleDelete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      deleteNode(nodeData.id);
+    },
+    [deleteNode, nodeData.id]
+  );
 
-  const handleConfigure = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedNode(nodeData.id);
-    // The Canvas component handles opening the modal when selectedNodeId changes
-  }, [setSelectedNode, nodeData.id]);
+  const handleConfigure = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setSelectedNode(nodeData.id);
+      // The Canvas component handles opening the modal when selectedNodeId changes
+    },
+    [setSelectedNode, nodeData.id]
+  );
 
-  const handleToggleHandles = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    toggleNodeHandles(nodeData.id);
-  }, [toggleNodeHandles, nodeData.id]);
+  const handleToggleHandles = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      toggleNodeHandles(nodeData.id);
+    },
+    [toggleNodeHandles, nodeData.id]
+  );
 
   return (
     <div
@@ -67,29 +77,31 @@ export function CustomNode({ data, selected }: NodeProps) {
       <Handle
         type="target"
         position={targetPosition}
-        className="w-16 !bg-teal-500"
+        className="w-4 h-4 !bg-blue-600"
       />
 
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-3">
         {nodeData.icon && (
           <img
             src={nodeData.icon}
             alt={nodeData.label}
-            className="w-6 h-6 object-contain"
+            className="w-8 h-8 object-contain flex-shrink-0"
           />
         )}
-        <div>
-          <div className="text-sm font-medium text-gray-900">
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-medium text-gray-900 truncate">
             {nodeData.label}
           </div>
-          <div className="text-xs text-gray-500">{relevantNodeInfo()}</div>
+          <div className="text-xs text-gray-500 truncate">
+            {relevantNodeInfo()}
+          </div>
         </div>
       </div>
 
       <Handle
         type="source"
         position={sourcePosition}
-        className="w-16 !bg-teal-500"
+        className="w-4 h-4 !bg-blue-600"
       />
 
       {/* Hover Configuration Panel */}
@@ -108,7 +120,7 @@ export function CustomNode({ data, selected }: NodeProps) {
           >
             <TrashIcon className="w-4 h-4" />
           </button>
-          
+
           {/* Configure Button */}
           <button
             onClick={handleConfigure}
@@ -118,7 +130,7 @@ export function CustomNode({ data, selected }: NodeProps) {
           >
             <Cog6ToothIcon className="w-4 h-4" />
           </button>
-          
+
           {/* Handle Swap Button */}
           <button
             onClick={handleToggleHandles}
