@@ -6,7 +6,6 @@ import {
   ConnectionLineType,
   type Node,
 } from "@xyflow/react";
-import type { Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useState } from "react";
 import { useCanvasStore } from "../../stores/canvasStore";
