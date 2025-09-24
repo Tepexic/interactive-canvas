@@ -116,7 +116,7 @@ export function CustomNode({ data, selected }: NodeProps) {
           {/* Delete Button */}
           <button
             onClick={handleDelete}
-            className="w-8 h-8 flex items-center justify-center rounded text-red-600 hover:bg-red-50 transition-colors duration-200"
+            className="w-6 h-5 flex items-center justify-center rounded text-red-600 hover:bg-red-50 transition-colors duration-200"
             aria-label="Delete node"
             title="Delete node"
           >
@@ -126,7 +126,7 @@ export function CustomNode({ data, selected }: NodeProps) {
           {/* Configure Button */}
           <button
             onClick={handleConfigure}
-            className="w-8 h-8 flex items-center justify-center rounded text-gray-600 hover:bg-gray-50 transition-colors duration-200"
+            className="w-6 h-5 flex items-center justify-center rounded text-gray-600 hover:bg-gray-50 transition-colors duration-200"
             aria-label="Configure node"
             title="Configure node"
           >
@@ -136,7 +136,7 @@ export function CustomNode({ data, selected }: NodeProps) {
           {/* Handle Swap Button */}
           <button
             onClick={handleToggleHandles}
-            className="w-8 h-8 flex items-center justify-center rounded text-gray-600 hover:bg-gray-50 transition-colors duration-200"
+            className="w-6 h-5 flex items-center justify-center rounded text-gray-600 hover:bg-gray-50 transition-colors duration-200"
             aria-label="Toggle handle orientation"
             title="Toggle handle orientation"
           >
