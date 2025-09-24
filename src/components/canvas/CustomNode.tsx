@@ -20,11 +20,13 @@ export function CustomNode({ data, selected }: NodeProps) {
       case "gmail":
         return String(nodeData.config.recipient || "");
       case "amazon":
-        return String(nodeData.config.metric || "");
+        return String(
+          `${nodeData.config.metric} / ${nodeData.config.timeframe} Days` || ""
+        );
       case "slack":
         return String(nodeData.config.channel || "");
       default:
-        return "AI Agent";
+        return String(nodeData.config.prompt || "");
     }
   };
 

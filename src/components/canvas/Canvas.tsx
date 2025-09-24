@@ -33,6 +33,7 @@ export default function Canvas() {
     setSelectedNode,
     updateNodeData,
     selectedNodeId,
+    isPlaying,
   } = useCanvasStore();
 
   // Modal state
@@ -96,6 +97,10 @@ export default function Canvas() {
           fitView
           connectionLineType={ConnectionLineType.SmoothStep}
           defaultEdgeOptions={{}}
+          // Disable editing
+          nodesDraggable={!isPlaying}
+          nodesConnectable={!isPlaying}
+          elementsSelectable={!isPlaying}
           className="bg-gray-50 "
         >
           <Background />
