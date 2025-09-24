@@ -9,8 +9,8 @@ export interface BlockType {
 
 export interface CustomNodeData extends BlockType, Record<string, unknown> {
   id: string; // Unique identifier for each node instance
-  handleOrientation?: "horizontal" | "vertical"; // Handle position preference
   valid: boolean;
+  state: "idle" | "running" | "success" | "error";
 }
 
 export type AmazonBlockMetrics = "Revenue" | "Units Sold" | "Orders";

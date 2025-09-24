@@ -57,5 +57,5 @@ button {
 .react-flow__node-group {
   width: auto !important;
   border: none !important;
-  background-color: none !important;
+  background-color: transparent !important;
 }

@@ -31,6 +31,7 @@ export function CanvasToolbar() {
         id: "", // Will be set by addNode function
         ...block,
         valid: false,
+        state: "idle",
       },
       type: "default",
     });

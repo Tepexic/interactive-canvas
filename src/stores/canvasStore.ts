@@ -31,7 +31,6 @@ export interface CanvasState {
   deleteEdge: (edgeId: string) => void;
   updateNodeData: (nodeId: string, data: Partial<CustomNodeData>) => void;
   setSelectedNode: (nodeId: string | null) => void;
-  toggleNodeHandles: (nodeId: string) => void;
   togglePlaying: () => void;
   setPlaying: (playing: boolean) => void;
 }
@@ -170,7 +169,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => {
 
     setSelectedNode: (nodeId) => set({ selectedNodeId: nodeId }),
 
-    toggleNodeHandles: (nodeId) => {
+    toggleNodeHandles: (nodeId: string) => {
       const newNodes = get().nodes.map((node) =>
         node.id === nodeId
           ? {

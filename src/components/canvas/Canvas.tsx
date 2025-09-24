@@ -70,7 +70,7 @@ export default function Canvas() {
   const handleModalSave = (config: Record<string, unknown>) => {
     if (selectedNodeData) {
       // Update the node configuration in the store
-      updateNodeData(selectedNodeData.id, { config });
+      updateNodeData(selectedNodeData.id, { config, valid: true });
       handleModalClose();
     }
   };

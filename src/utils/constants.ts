@@ -94,8 +94,8 @@ export const BLOCK_TYPES: BlockType[] = [
     label: "Amazon Sales Report Block",
     purpose: "Pull sales data",
     config: {
-      metric: "Units Sold",
-      timeframe: 7,
+      metric: "",
+      timeframe: 0,
     },
     color: "#3b82f6",
     icon: amazonLogo,

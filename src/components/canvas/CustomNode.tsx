@@ -5,7 +5,7 @@ import { useState, useCallback } from "react";
 import {
   TrashIcon,
   Cog6ToothIcon,
-  ArrowsUpDownIcon,
+  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { useCanvasStore } from "@/stores/canvasStore";
 import { ConfirmationModal } from "../modals/ConfirmationModal";
@@ -15,7 +15,7 @@ export function CustomNode({ data, selected }: NodeProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const { deleteNode, toggleNodeHandles, setSelectedNode, edges } = useCanvasStore();
+  const { deleteNode, setSelectedNode, edges } = useCanvasStore();
 
   const relevantNodeInfo = (): string => {
     switch (nodeData.type) {
@@ -23,7 +23,9 @@ export function CustomNode({ data, selected }: NodeProps) {
         return String(nodeData.config.recipient || "");
       case "amazon":
         return String(
-          `${nodeData.config.metric || ""} / ${nodeData.config.timeframe || ""} Days`
+          `${nodeData.config.metric || ""} / ${
+            nodeData.config.timeframe || ""
+          } Days`
         );
       case "slack":
         return String(nodeData.config.channel || "");
@@ -32,16 +34,9 @@ export function CustomNode({ data, selected }: NodeProps) {
     }
   };
 
-  // Get handle positions based on orientation
-  const getHandlePositions = () => {
-    const orientation = nodeData.handleOrientation || "vertical";
-    return orientation === "horizontal"
-      ? { source: Position.Right, target: Position.Left }
-      : { source: Position.Bottom, target: Position.Top };
-  };
-
-  const { source: sourcePosition, target: targetPosition } =
-    getHandlePositions();
+  // Fixed handle positions - always left/right
+  const sourcePosition = Position.Right;
+  const targetPosition = Position.Left;
 
   // Helper function to count connected edges
   const getConnectedEdgesCount = () => {
@@ -51,13 +46,10 @@ export function CustomNode({ data, selected }: NodeProps) {
   };
 
   // Button handlers
-  const handleDelete = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setShowDeleteConfirm(true);
-    },
-    []
-  );
+  const handleDelete = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(true);
+  }, []);
 
   const handleConfirmDelete = useCallback(() => {
     deleteNode(nodeData.id);
@@ -77,14 +69,6 @@ export function CustomNode({ data, selected }: NodeProps) {
     [setSelectedNode, nodeData.id]
   );
 
-  const handleToggleHandles = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      toggleNodeHandles(nodeData.id);
-    },
-    [toggleNodeHandles, nodeData.id]
-  );
-
   return (
     <div
       className={`px-4 py-2 shadow-md rounded-md bg-white border-2 min-w-[200px] relative ${
@@ -97,10 +81,11 @@ export function CustomNode({ data, selected }: NodeProps) {
       <Handle
         type="target"
         position={targetPosition}
+        id="target"
         className="w-4 h-4 !bg-blue-600"
       />
 
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2">
         {nodeData.icon && (
           <img
             src={nodeData.icon}
@@ -109,28 +94,41 @@ export function CustomNode({ data, selected }: NodeProps) {
           />
         )}
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-medium text-gray-900 truncate">
+          <div className="text-sm text-left font-medium text-gray-900 truncate">
             {nodeData.label}
           </div>
-          <div className="text-xs text-gray-500 truncate">
+          <div className="text-xs text-left text-gray-500 truncate">
             {relevantNodeInfo()}
           </div>
         </div>
+
+        {!nodeData.valid && (
+          <div className="relative group">
+            <ExclamationTriangleIcon className="w-8 h-8 text-yellow-400" />
+            {/* Tooltip */}
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+              Configuration needed, please add the missing fields
+              {/* Tooltip arrow */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+            </div>
+          </div>
+        )}
       </div>
 
       <Handle
         type="source"
         position={sourcePosition}
+        id="source"
         className="w-4 h-4 !bg-blue-600"
       />
 
       {/* Hover Configuration Panel */}
       <div
-        className={`absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-full ml-2 flex flex-col space-y-1 transition-opacity duration-300 ${
+        className={`absolute right-0 top-0 transform -translate-y-full ml-2 space-y-1 transition-opacity duration-300 ${
           isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-md p-1 border border-gray-200">
+        <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-md p-1 border border-gray-200 flex">
           {/* Delete Button */}
           <button
             onClick={handleDelete}
@@ -149,16 +147,6 @@ export function CustomNode({ data, selected }: NodeProps) {
             title="Configure node"
           >
             <Cog6ToothIcon className="w-4 h-4" />
-          </button>
-
-          {/* Handle Swap Button */}
-          <button
-            onClick={handleToggleHandles}
-            className="w-6 h-5 flex items-center justify-center rounded text-gray-600 hover:bg-gray-50 transition-colors duration-200"
-            aria-label="Toggle handle orientation"
-            title="Toggle handle orientation"
-          >
-            <ArrowsUpDownIcon className="w-4 h-4" />
           </button>
         </div>
       </div>
