@@ -4,6 +4,7 @@ import {
   Controls,
   MiniMap,
   ConnectionLineType,
+  type Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCanvasStore } from "../../stores/canvasStore";
@@ -29,7 +30,7 @@ export default function Canvas() {
     setSelectedNode,
   } = useCanvasStore();
 
-  const onNodeClick = (_event: React.MouseEvent, node: any) => {
+  const onNodeClick = (_event: React.MouseEvent, node: Node) => {
     setSelectedNode(node.id);
   };
 

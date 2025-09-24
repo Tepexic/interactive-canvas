@@ -2,7 +2,7 @@ export interface BlockType {
   type: "amazon" | "gmail" | "ai" | "slack";
   label: string;
   purpose: string;
-  config: Record<any, any>;
+  config: Record<string, unknown>;
   color: string;
   icon: string;
 }
