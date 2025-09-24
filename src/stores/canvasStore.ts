@@ -40,11 +40,18 @@ export interface CanvasState {
 const initializeStore = () => {
   const savedState = loadCanvasState();
   if (savedState) {
+    console.log("📦 Loaded canvas state from localStorage:", {
+      nodes: savedState.nodes.length,
+      edges: savedState.edges.length,
+      version: savedState.version,
+      timestamp: new Date(savedState.timestamp).toISOString()
+    });
     return {
       nodes: savedState.nodes,
       edges: savedState.edges,
     };
   }
+  console.log("🆕 Starting with empty canvas - no saved state found");
   return {
     nodes: [] as Node<CustomNodeData>[],
     edges: [] as Edge[],
@@ -53,6 +60,7 @@ const initializeStore = () => {
 
 // Persistence helpers
 const persistState = (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
+  console.log("💾 Saving canvas state:", { nodes: nodes.length, edges: edges.length });
   saveCanvasState(nodes, edges);
 };
 

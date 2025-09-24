@@ -15,6 +15,11 @@ export const STORAGE_VERSION = "1.0.0";
  * Save canvas state to localStorage with error handling
  */
 export const saveCanvasState = (nodes: Node<CustomNodeData>[], edges: Edge[]): void => {
+  if (!checkStorageAvailable()) {
+    console.warn("localStorage is not available, canvas state will not be saved");
+    return;
+  }
+
   try {
     const dataToSave: PersistedCanvasState = {
       nodes,
@@ -22,9 +27,15 @@ export const saveCanvasState = (nodes: Node<CustomNodeData>[], edges: Edge[]): v
       version: STORAGE_VERSION,
       timestamp: Date.now(),
     };
-    localStorage.setItem(CANVAS_STORAGE_KEY, JSON.stringify(dataToSave));
+    const serialized = JSON.stringify(dataToSave);
+    localStorage.setItem(CANVAS_STORAGE_KEY, serialized);
+    console.log("✅ Canvas state saved successfully");
   } catch (error) {
-    console.warn("Failed to save canvas state:", error);
+    if (error instanceof Error && error.name === 'QuotaExceededError') {
+      console.warn("localStorage quota exceeded, cannot save canvas state");
+    } else {
+      console.warn("Failed to save canvas state:", error);
+    }
   }
 };
 
@@ -101,13 +112,13 @@ export const checkStorageAvailable = (): boolean => {
 /**
  * Debounce utility function for delayed saves
  */
-export const debounce = <T extends (...args: unknown[]) => void>(
+export const debounce = <T extends (...args: never[]) => void>(
   func: T,
   wait: number
-): ((...args: Parameters<T>) => void) => {
+): T => {
   let timeout: ReturnType<typeof setTimeout>;
-  return (...args: Parameters<T>) => {
+  return ((...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
-  };
+  }) as T;
 };
