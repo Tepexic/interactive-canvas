@@ -1,0 +1,70 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#f0f0f0;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main container circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#bgGradient)" stroke="#5a67d8" stroke-width="2"/>
+  
+  <!-- AI Brain/Neural network representation -->
+  <g transform="translate(50,35)">
+    <!-- Central processing unit -->
+    <circle cx="0" cy="0" r="8" fill="url(#brainGradient)" stroke="#4c51bf" stroke-width="1.5"/>
+    
+    <!-- Neural connections -->
+    <g stroke="#ffffff" stroke-width="2" fill="none" opacity="0.8">
+      <!-- Top connections -->
+      <line x1="-6" y1="-6" x2="-15" y2="-12"/>
+      <line x1="6" y1="-6" x2="15" y2="-12"/>
+      <!-- Side connections -->
+      <line x1="-8" y1="0" x2="-18" y2="0"/>
+      <line x1="8" y1="0" x2="18" y2="0"/>
+      <!-- Bottom connections -->
+      <line x1="-6" y1="6" x2="-15" y2="12"/>
+      <line x1="6" y1="6" x2="15" y2="12"/>
+    </g>
+    
+    <!-- Neural nodes -->
+    <g fill="#ffffff" opacity="0.9">
+      <circle cx="-15" cy="-12" r="3"/>
+      <circle cx="15" cy="-12" r="3"/>
+      <circle cx="-18" cy="0" r="3"/>
+      <circle cx="18" cy="0" r="3"/>
+      <circle cx="-15" cy="12" r="3"/>
+      <circle cx="15" cy="12" r="3"/>
+    </g>
+  </g>
+  
+  <!-- Code/prompt indicator -->
+  <g transform="translate(50,65)">
+    <!-- Code brackets -->
+    <path d="M-12,-5 L-15,-5 L-15,5 L-12,5" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.9"/>
+    <path d="M12,-5 L15,-5 L15,5 L12,5" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.9"/>
+    
+    <!-- Code dots -->
+    <circle cx="-6" cy="0" r="1.5" fill="#ffffff" opacity="0.8"/>
+    <circle cx="0" cy="0" r="1.5" fill="#ffffff" opacity="0.8"/>
+    <circle cx="6" cy="0" r="1.5" fill="#ffffff" opacity="0.8"/>
+  </g>
+  
+  <!-- Subtle animation sparkles -->
+  <g opacity="0.6">
+    <circle cx="25" cy="25" r="1.5" fill="#ffffff">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="75" cy="30" r="1" fill="#ffffff">
+      <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="80" cy="70" r="1.5" fill="#ffffff">
+      <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>
