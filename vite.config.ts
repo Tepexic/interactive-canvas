@@ -10,4 +10,5 @@ export default defineConfig({
       "@": "/src",
     },
   },
+  base: "/interactive-canvas/",
 });
