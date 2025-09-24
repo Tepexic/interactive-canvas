@@ -69,7 +69,7 @@ export function CustomNode({ data, selected }: NodeProps) {
 
   return (
     <div
-      className={`px-4 py-2 shadow-md rounded-md bg-white border-2 min-w-[150px] relative ${
+      className={`px-4 py-2 shadow-md rounded-md bg-white border-2 min-w-[200px] relative ${
         selected ? "border-blue-500" : "border-gray-200"
       }`}
       style={{ borderLeftColor: nodeData.color, borderLeftWidth: "4px" }}
