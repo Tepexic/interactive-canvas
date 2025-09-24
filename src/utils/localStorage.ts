@@ -43,6 +43,11 @@ export const saveCanvasState = (nodes: Node<CustomNodeData>[], edges: Edge[]): v
  * Load canvas state from localStorage with validation and error handling
  */
 export const loadCanvasState = (): PersistedCanvasState | null => {
+  if (!checkStorageAvailable()) {
+    console.warn("localStorage is not available, starting with empty canvas");
+    return null;
+  }
+
   try {
     const stored = localStorage.getItem(CANVAS_STORAGE_KEY);
     if (!stored) return null;
@@ -75,6 +80,7 @@ export const loadCanvasState = (): PersistedCanvasState | null => {
       }
     }
 
+    console.log("✅ Canvas state loaded successfully from localStorage");
     return parsed;
   } catch (error) {
     console.warn("Failed to load canvas state:", error);

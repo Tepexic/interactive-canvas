@@ -66,11 +66,13 @@ const persistState = (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
 
 // Debounced save for position changes (1 second delay)
 const debouncedSave = debounce((nodes: Node<CustomNodeData>[], edges: Edge[]) => {
+  console.log("⏱️ Debounced save triggered");
   persistState(nodes, edges);
 }, 1000);
 
 // Immediate save for critical operations
 const immediateSave = (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
+  console.log("⚡ Immediate save triggered");
   persistState(nodes, edges);
 };
 
