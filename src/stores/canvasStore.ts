@@ -9,7 +9,7 @@ import type {
 } from "@xyflow/react";
 import type { CustomNodeData, BlockType } from "@/types/canvas";
 import amazonLogo from "@/assets/amazon.webp";
-import agentLogo from "@/assets/agent.svg";
+import agentLogo from "@/assets/agent.png";
 import gmailLogo from "@/assets/gmail.webp";
 import slackLogo from "@/assets/slack.webp";
 

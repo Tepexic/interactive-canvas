@@ -5,9 +5,11 @@ import {
   MiniMap,
   ConnectionLineType,
 } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCanvasStore } from "../../stores/canvasStore";
 import { CanvasToolbar } from "./CanvasToolbar";
+import type { CustomNodeData } from "../../types/canvas";
 import { CustomNode } from "./CustomNode";
 import { CustomEdge } from "./CustomEdge";
 
@@ -37,6 +39,11 @@ export default function Canvas() {
     setSelectedNode(null);
   };
 
+  // Custom function to return node colors for minimap
+  const getNodeColor = (node: Node<CustomNodeData>) => {
+    return node.data?.color || "#6b7280"; // fallback to gray if no color
+  };
+
   return (
     <div className="w-full h-full flex flex-col">
       <CanvasToolbar />
@@ -53,15 +60,12 @@ export default function Canvas() {
           onPaneClick={onPaneClick}
           fitView
           connectionLineType={ConnectionLineType.SmoothStep}
-          defaultEdgeOptions={{
-            type: "smoothstep",
-            animated: true,
-          }}
-          className="bg-gray-50 dark:bg-gray-800"
+          defaultEdgeOptions={{}}
+          className="bg-gray-50 "
         >
-          <Background className="dark:opacity-20" />
-          <Controls className="dark:bg-gray-700 dark:border-gray-600" />
-          <MiniMap className="dark:bg-gray-700" />
+          <Background />
+          <Controls />
+          <MiniMap nodeColor={getNodeColor} className="dark:bg-gray-700" />
         </ReactFlow>
       </div>
     </div>

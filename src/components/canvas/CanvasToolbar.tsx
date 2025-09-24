@@ -40,16 +40,16 @@ export function CanvasToolbar() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-2 flex items-center justify-between">
+    <div className="bg-gray-800 border-b border-gray-700 px-4 py-2 flex items-center justify-between">
       <div className="w-full flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+        <h1 className="text-xl font-semibold text-white flex items-center">
           <ArrowTrendingUpIcon className="w-6 h-6 mr-2" />
           Flow Builder
         </h1>
 
         <div className="flex items-center space-x-2">
           <Menu as="div" className="relative">
-            <Menu.Button className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400">
+            <Menu.Button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-200 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 ocus:ring-indigo-400">
               <PlusIcon className="w-4 h-4 mr-1" />
               Block
               <ChevronDownIcon className="w-4 h-4 ml-1" />
@@ -64,7 +64,7 @@ export function CanvasToolbar() {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-left rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none">
+              <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-left rounded-md bg-gray-800 shadow-lg ring-1 ring-gray-600 ring-opacity-5 focus:outline-none">
                 <div className="py-1">
                   {blockTypes.map((blockType, index) => (
                     <Menu.Item key={index}>
@@ -72,9 +72,7 @@ export function CanvasToolbar() {
                         <button
                           onClick={() => handleAddNode(blockType)}
                           className={`${
-                            active
-                              ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-                              : "text-gray-700 dark:text-gray-200"
+                            active ? "bg-gray-700 text-white" : "text-gray-200"
                           } group flex items-center px-4 py-2 text-sm w-full text-left`}
                         >
                           <span className="mr-3">
@@ -86,7 +84,7 @@ export function CanvasToolbar() {
                           </span>
                           <div>
                             <div className="font-medium">{blockType.label}</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                            <div className="text-xs text-gray-400">
                               {blockType.purpose}
                             </div>
                           </div>
@@ -101,7 +99,7 @@ export function CanvasToolbar() {
           {selectedNodeId && (
             <button
               onClick={handleDeleteSelected}
-              className="inline-flex items-center px-3 py-2 border border-red-300 dark:border-red-600 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400"
+              className="inline-flex items-center px-3 py-2 border border-red-600 shadow-sm text-sm leading-4 font-medium rounded-md text-red-400 bg-gray-700 hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400"
             >
               <TrashIcon className="w-4 h-4 mr-1" />
               Delete
