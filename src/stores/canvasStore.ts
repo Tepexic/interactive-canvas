@@ -8,11 +8,21 @@ import type {
   Connection,
 } from "@xyflow/react";
 import type { CustomNodeData } from "@/types/canvas";
+import { initializeStore, immediateSave, debouncedSave } from "@/utils/persist";
+import { validateFlowConnectivity } from "@/utils/nodeValidation";
 import {
-  saveCanvasState,
-  loadCanvasState,
-  debounce,
-} from "@/utils/localStorage";
+  mockAIApiCall,
+  mockAmazonApiCall,
+  mockGmailApiCall,
+  mockSlackApiCall,
+} from "@/utils/mocks";
+
+const apiCallMap: Record<string, any> = {
+  amazon: mockAmazonApiCall,
+  gmail: mockGmailApiCall,
+  ai: mockAIApiCall,
+  slack: mockSlackApiCall,
+};
 
 export interface CanvasState {
   isPlaying: boolean;
@@ -31,42 +41,11 @@ export interface CanvasState {
   deleteEdge: (edgeId: string) => void;
   updateNodeData: (nodeId: string, data: Partial<CustomNodeData>) => void;
   setSelectedNode: (nodeId: string | null) => void;
-  togglePlaying: () => void;
-  setPlaying: (playing: boolean) => void;
+  setPlaying: (
+    playing: boolean
+  ) => Promise<{ success: boolean; error?: string }>;
+  processNodes: () => void;
 }
-
-// Initialize store with saved data from localStorage
-const initializeStore = () => {
-  const savedState = loadCanvasState();
-  if (savedState) {
-    return {
-      nodes: savedState.nodes,
-      edges: savedState.edges,
-    };
-  }
-
-  return {
-    nodes: [] as Node<CustomNodeData>[],
-    edges: [] as Edge[],
-  };
-};
-
-// Persistence helpers
-const persistState = (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
-  saveCanvasState(nodes, edges);
-};
-// Debounced save for position changes (4 second delay)
-const debouncedSave = debounce(
-  (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
-    persistState(nodes, edges);
-  },
-  4000
-);
-
-// Immediate save for critical operations
-const immediateSave = (nodes: Node<CustomNodeData>[], edges: Edge[]) => {
-  persistState(nodes, edges);
-};
 
 export const useCanvasStore = create<CanvasState>((set, get) => {
   const initialState = initializeStore();
@@ -157,40 +136,78 @@ export const useCanvasStore = create<CanvasState>((set, get) => {
     },
 
     updateNodeData: (nodeId, newData) => {
-      const newNodes = get().nodes.map((node) =>
-        node.id === nodeId
-          ? { ...node, data: { ...node.data, ...newData } }
-          : node
-      );
+      const nodes = get().nodes;
+      const nodeIndex = nodes.findIndex((node) => node.id === nodeId);
+      if (nodeIndex === -1) return;
+
+      const newNodes = [...nodes];
+      newNodes[nodeIndex] = {
+        ...nodes[nodeIndex],
+        data: { ...nodes[nodeIndex].data, ...newData },
+      };
+
       set({ nodes: newNodes });
-      // Immediate save for configuration changes
       immediateSave(newNodes, get().edges);
     },
 
     setSelectedNode: (nodeId) => set({ selectedNodeId: nodeId }),
 
-    toggleNodeHandles: (nodeId: string) => {
-      const newNodes = get().nodes.map((node) =>
-        node.id === nodeId
-          ? {
-              ...node,
-              data: {
-                ...node.data,
-                handleOrientation:
-                  node.data.handleOrientation === "horizontal"
-                    ? ("vertical" as const)
-                    : ("horizontal" as const),
-              },
-            }
-          : node
-      ) as Node<CustomNodeData>[];
-      set({ nodes: newNodes });
-      // Immediate save for handle orientation changes
-      immediateSave(newNodes, get().edges);
+    setPlaying: async (playing) => {
+      if (!playing) {
+        set({ isPlaying: false });
+        return { success: true };
+      }
+
+      const nodes = get().nodes;
+      const edges = get().edges;
+
+      // Validate all nodes have valid data
+      const invalidNode = nodes.find((node) => !node.data.valid);
+      if (invalidNode) {
+        set({ isPlaying: false });
+        return {
+          success: false,
+          error: `Node "${invalidNode.data.label}" has invalid configuration. Please configure all nodes before starting.`,
+        };
+      }
+
+      // Validate flow connectivity
+      const flowValidation = validateFlowConnectivity(nodes, edges);
+      if (!flowValidation.isValid) {
+        set({ isPlaying: false });
+        return {
+          success: false,
+          error: flowValidation.error || "Invalid flow connectivity",
+        };
+      }
+
+      set({ isPlaying: true });
+      get().processNodes();
+      return { success: true };
     },
 
-    // Playing state actions (don't persist these)
-    togglePlaying: () => set((state) => ({ isPlaying: !state.isPlaying })),
-    setPlaying: (playing) => set({ isPlaying: playing }),
+    processNodes: async () => {
+      for (const node of get().nodes) {
+        get().updateNodeData(node.id, { ...node.data, state: "idle" });
+      }
+
+      for (const node of get().nodes) {
+        const apiCall = apiCallMap[node.data.type];
+        if (!apiCall) continue;
+
+        try {
+          get().updateNodeData(node.id, { ...node.data, state: "running" });
+          await apiCall();
+          get().updateNodeData(node.id, { ...node.data, state: "success" });
+        } catch (e) {
+          console.error(e);
+          set({ isPlaying: false });
+          get().updateNodeData(node.id, { ...node.data, state: "error" });
+          break;
+        }
+      }
+
+      set({ isPlaying: false });
+    },
   };
 });

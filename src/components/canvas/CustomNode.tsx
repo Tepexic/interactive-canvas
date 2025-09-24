@@ -6,6 +6,8 @@ import {
   TrashIcon,
   Cog6ToothIcon,
   ExclamationTriangleIcon,
+  ExclamationCircleIcon,
+  CheckIcon,
 } from "@heroicons/react/24/outline";
 import { useCanvasStore } from "@/stores/canvasStore";
 import { ConfirmationModal } from "../modals/ConfirmationModal";
@@ -70,11 +72,31 @@ export function CustomNode({ data, selected }: NodeProps) {
     [setSelectedNode, nodeData.id]
   );
 
+  const getStateIcon = () => {
+    switch (nodeData.state) {
+      case "idle":
+        return <></>;
+      case "running":
+        return (
+          <Cog6ToothIcon
+            className="w-8 h-8 animate-spin"
+            style={{ color: nodeData.color }}
+          />
+        );
+      case "success":
+        return <CheckIcon className="w-8 h-8 text-green-600" />;
+      case "error":
+        return <ExclamationCircleIcon className="w-8 h-8 text-red-600" />;
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <div
       className={`px-4 py-2 shadow-md rounded-md bg-white border-2 min-w-[200px] max-w-[300px] relative ${
         selected ? "border-blue-500" : "border-gray-200"
-      }`}
+      } ${nodeData.state === "running" && "border-green-600"}`}
       style={{ borderLeftColor: nodeData.color, borderLeftWidth: "4px" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -103,9 +125,11 @@ export function CustomNode({ data, selected }: NodeProps) {
           </div>
         </div>
 
-        {!nodeData.valid && (
+        {nodeData.valid ? (
+          getStateIcon()
+        ) : (
           <div className="relative group">
-            <ExclamationTriangleIcon className="w-8 h-8 text-yellow-400" />
+            <ExclamationTriangleIcon className="w-8 h-8 text-yellow-500 animate-ping" />
             {/* Tooltip */}
             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
               Configuration needed, please add the missing fields
@@ -158,8 +182,8 @@ export function CustomNode({ data, selected }: NodeProps) {
         title="Delete Node?"
         message={`Are you sure you want to delete "${nodeData.label}"?${
           getConnectedEdgesCount() > 0
-            ? ` This action will also remove ${getConnectedEdgesCount()} connected edge(s) and cannot be undone.`
-            : " This action cannot be undone."
+            ? ` This action will also remove ${getConnectedEdgesCount()} connected edge(s).`
+            : ""
         }`}
         confirmText="Delete Node"
         cancelText="Cancel"
