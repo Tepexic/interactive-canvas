@@ -5,6 +5,7 @@ import {
   ArrowTrendingUpIcon,
   ChevronDownIcon,
   PlayIcon,
+  Squares2X2Icon,
 } from "@heroicons/react/24/outline";
 import { useCanvasStore } from "@/stores/canvasStore";
 import { BLOCK_TYPES } from "@/utils/constants";
@@ -13,7 +14,7 @@ import { AlertDialog } from "@/components/modals/AlertDialog";
 import { useAlert } from "@/hooks/useAlert";
 
 export function CanvasToolbar() {
-  const { addNode, setPlaying } = useCanvasStore();
+  const { addNode, setPlaying, togglePalette, isPaletteVisible } = useCanvasStore();
   const { alertState, showError, closeAlert } = useAlert();
 
   const handleAddNode = (block: BlockType) => {
@@ -57,6 +58,23 @@ export function CanvasToolbar() {
           </h1>
 
           <div className="flex items-center space-x-2">
+            {/* Palette Toggle Button */}
+            <button
+              onClick={togglePalette}
+              className={`
+                inline-flex items-center px-3 py-2 border shadow-sm text-sm leading-4 font-medium rounded-md
+                transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400
+                ${isPaletteVisible 
+                  ? "border-indigo-500 text-indigo-200 bg-indigo-600 hover:bg-indigo-700" 
+                  : "border-gray-300 text-gray-200 bg-gray-700 hover:bg-gray-600"
+                }
+              `}
+              title={isPaletteVisible ? "Hide Node Palette" : "Show Node Palette"}
+            >
+              <Squares2X2Icon className="w-4 h-4 mr-1" />
+              Palette
+            </button>
+
             <Menu as="div" className="relative">
               <Menu.Button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-200 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 ocus:ring-indigo-400">
                 <PlusIcon className="w-4 h-4 mr-1" />
