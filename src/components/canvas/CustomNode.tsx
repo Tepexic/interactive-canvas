@@ -5,14 +5,14 @@ import type { CustomNodeData } from "@/types/canvas";
 export function CustomNode({ data, selected }: NodeProps) {
   const nodeData = data as CustomNodeData;
 
-  const relevantNodeInfo = () => {
+  const relevantNodeInfo = (): string => {
     switch (nodeData.type) {
       case "gmail":
-        return nodeData.config.recipient;
+        return String(nodeData.config.recipient || "");
       case "amazon":
-        return nodeData.config.metric;
+        return String(nodeData.config.metric || "");
       case "slack":
-        return nodeData.config.channel;
+        return String(nodeData.config.channel || "");
       default:
         return "AI Agent";
     }

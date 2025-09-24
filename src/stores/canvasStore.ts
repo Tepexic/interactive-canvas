@@ -115,6 +115,39 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
       },
       type: "default",
     },
+    {
+      id: "node-3",
+      position: { x: 250, y: 50 },
+      data: {
+        id: "node-3",
+        type: "ai",
+        label: "AI Agent",
+        purpose: "Turn sales data into plain English or recommendations",
+        color: "#10b981",
+        icon: agentLogo,
+        config: {
+          prompt: "Analyze the sales data and provide insights",
+        },
+      },
+      type: "default",
+    },
+    {
+      id: "node-4",
+      position: { x: 250, y: 250 },
+      data: {
+        id: "node-4",
+        type: "amazon",
+        label: "Amazon Sales Report",
+        purpose: "Pull sales data",
+        color: "#3b82f6",
+        icon: amazonLogo,
+        config: {
+          metric: "Units Sold",
+          timeframe: 7,
+        },
+      },
+      type: "default",
+    },
   ],
   edges: [
     {

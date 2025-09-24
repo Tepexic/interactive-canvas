@@ -4,14 +4,17 @@ import {
   Controls,
   MiniMap,
   ConnectionLineType,
+  type Node,
 } from "@xyflow/react";
 import type { Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { useState } from "react";
 import { useCanvasStore } from "../../stores/canvasStore";
 import { CanvasToolbar } from "./CanvasToolbar";
 import type { CustomNodeData } from "../../types/canvas";
 import { CustomNode } from "./CustomNode";
 import { CustomEdge } from "./CustomEdge";
+import { ConfigurationModal } from "../modals/ConfigurationModal";
 
 const nodeTypes = {
   default: CustomNode,
@@ -29,14 +32,37 @@ export default function Canvas() {
     onEdgesChange,
     onConnect,
     setSelectedNode,
+    updateNodeData,
   } = useCanvasStore();
 
-  const onNodeClick = (_event: React.MouseEvent, node: any) => {
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedNodeData, setSelectedNodeData] =
+    useState<CustomNodeData | null>(null);
+
+  const onNodeClick = (_event: React.MouseEvent, node: Node) => {
     setSelectedNode(node.id);
+    // Open configuration modal with the node data
+    const nodeData = node.data as CustomNodeData;
+    setSelectedNodeData(nodeData);
+    setIsModalOpen(true);
   };
 
   const onPaneClick = () => {
     setSelectedNode(null);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedNodeData(null);
+  };
+
+  const handleModalSave = (config: Record<string, unknown>) => {
+    if (selectedNodeData) {
+      // Update the node configuration in the store
+      updateNodeData(selectedNodeData.id, { config });
+      handleModalClose();
+    }
   };
 
   // Custom function to return node colors for minimap
@@ -65,9 +91,17 @@ export default function Canvas() {
         >
           <Background />
           <Controls />
-          <MiniMap nodeColor={getNodeColor} className="dark:bg-gray-700" />
+          <MiniMap nodeColor={getNodeColor} />
         </ReactFlow>
       </div>
+
+      {/* Configuration Modal */}
+      <ConfigurationModal
+        isOpen={isModalOpen}
+        blockData={selectedNodeData}
+        onSave={handleModalSave}
+        onClose={handleModalClose}
+      />
     </div>
   );
 }
