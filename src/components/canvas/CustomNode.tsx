@@ -8,12 +8,14 @@ import {
   ArrowsUpDownIcon,
 } from "@heroicons/react/24/outline";
 import { useCanvasStore } from "@/stores/canvasStore";
+import { ConfirmationModal } from "../modals/ConfirmationModal";
 
 export function CustomNode({ data, selected }: NodeProps) {
   const nodeData = data as CustomNodeData;
   const [isHovered, setIsHovered] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const { deleteNode, toggleNodeHandles, setSelectedNode } = useCanvasStore();
+  const { deleteNode, toggleNodeHandles, setSelectedNode, edges } = useCanvasStore();
 
   const relevantNodeInfo = (): string => {
     switch (nodeData.type) {
@@ -41,14 +43,30 @@ export function CustomNode({ data, selected }: NodeProps) {
   const { source: sourcePosition, target: targetPosition } =
     getHandlePositions();
 
+  // Helper function to count connected edges
+  const getConnectedEdgesCount = () => {
+    return edges.filter(
+      (edge) => edge.source === nodeData.id || edge.target === nodeData.id
+    ).length;
+  };
+
   // Button handlers
   const handleDelete = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      deleteNode(nodeData.id);
+      setShowDeleteConfirm(true);
     },
-    [deleteNode, nodeData.id]
+    []
   );
+
+  const handleConfirmDelete = useCallback(() => {
+    deleteNode(nodeData.id);
+    setShowDeleteConfirm(false);
+  }, [deleteNode, nodeData.id]);
+
+  const handleCancelDelete = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, []);
 
   const handleConfigure = useCallback(
     (e: React.MouseEvent) => {
@@ -144,6 +162,22 @@ export function CustomNode({ data, selected }: NodeProps) {
           </button>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        title="Delete Node?"
+        message={`Are you sure you want to delete "${nodeData.label}"?${
+          getConnectedEdgesCount() > 0
+            ? ` This action will also remove ${getConnectedEdgesCount()} connected edge(s) and cannot be undone.`
+            : " This action cannot be undone."
+        }`}
+        confirmText="Delete Node"
+        cancelText="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        variant="danger"
+      />
     </div>
   );
 }
