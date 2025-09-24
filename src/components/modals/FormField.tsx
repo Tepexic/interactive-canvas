@@ -18,30 +18,39 @@ const DROPDOWN_OPTIONS = {
   },
 } as const;
 
-export function FormField({ name, value, blockType, onChange }: FormFieldProps) {
+export function FormField({
+  name,
+  value,
+  blockType,
+  onChange,
+}: FormFieldProps) {
   const [error, setError] = useState<string>("");
 
   // Determine field type based on the field name and block type
   const getFieldType = (): "text" | "email" | "textarea" | "dropdown" => {
     if (name === "recipient") return "email";
     if (name === "message" || name === "prompt") return "textarea";
-    if (blockType === "amazon" && (name === "metric" || name === "timeframe")) return "dropdown";
+    if (blockType === "amazon" && (name === "metric" || name === "timeframe"))
+      return "dropdown";
     if (blockType === "slack" && name === "channel") return "dropdown";
     return "text";
   };
 
   // Get dropdown options for this field
   const getDropdownOptions = (): readonly (string | number)[] => {
-    if (blockType === "amazon" && name === "metric") return DROPDOWN_OPTIONS.amazon.metric;
-    if (blockType === "amazon" && name === "timeframe") return DROPDOWN_OPTIONS.amazon.timeframe;
-    if (blockType === "slack" && name === "channel") return DROPDOWN_OPTIONS.slack.channel;
+    if (blockType === "amazon" && name === "metric")
+      return DROPDOWN_OPTIONS.amazon.metric;
+    if (blockType === "amazon" && name === "timeframe")
+      return DROPDOWN_OPTIONS.amazon.timeframe;
+    if (blockType === "slack" && name === "channel")
+      return DROPDOWN_OPTIONS.slack.channel;
     return [];
   };
 
   // Validate field value
   const validateField = (fieldValue: string | number): string => {
     const strValue = String(fieldValue);
-    
+
     if (!strValue || strValue.trim().length === 0) {
       return `${formatLabel(name)} is required`;
     }
@@ -81,13 +90,13 @@ export function FormField({ name, value, blockType, onChange }: FormFieldProps) 
   const stringValue = String(value || "");
   const isRequired = true; // All fields are required based on the requirements
 
-  const inputClasses = `mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
-    error ? "border-red-500 dark:border-red-500" : ""
+  const inputClasses = `mt-1 block w-full px-3 py-2 border border-gray-300  rounded-md shadow-sm bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
+    error ? "border-red-500" : ""
   }`;
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <label className="block text-sm font-medium text-gray-700 ">
         {formatLabel(name)}
         {isRequired && <span className="text-red-500 ml-1">*</span>}
       </label>
@@ -96,7 +105,8 @@ export function FormField({ name, value, blockType, onChange }: FormFieldProps) 
         <select
           value={stringValue}
           onChange={(e) => {
-            const newValue = name === "timeframe" ? Number(e.target.value) : e.target.value;
+            const newValue =
+              name === "timeframe" ? Number(e.target.value) : e.target.value;
             handleChange(newValue);
           }}
           className={inputClasses}
@@ -132,7 +142,7 @@ export function FormField({ name, value, blockType, onChange }: FormFieldProps) 
         />
       )}
 
-      {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-sm text-red-600 ">{error}</p>}
     </div>
   );
 }

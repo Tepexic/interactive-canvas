@@ -90,7 +90,7 @@ export default function Canvas() {
         >
           <Background />
           <Controls />
-          <MiniMap nodeColor={getNodeColor} className="dark:bg-gray-700" />
+          <MiniMap nodeColor={getNodeColor} />
         </ReactFlow>
       </div>
 

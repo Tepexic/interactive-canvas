@@ -27,15 +27,16 @@ export function ConfigurationModal({
   }
 
   const handleFieldChange = (name: string, value: string | number) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation check - ensure all required fields are filled
-    const hasEmptyFields = Object.values(formData).some(value => 
-      !value || (typeof value === "string" && value.trim().length === 0)
+    const hasEmptyFields = Object.values(formData).some(
+      (value) =>
+        !value || (typeof value === "string" && value.trim().length === 0)
     );
 
     if (hasEmptyFields) {
@@ -79,18 +80,18 @@ export function ConfigurationModal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <div className="flex items-center justify-between mb-4">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 dark:text-white"
+                    className="text-lg font-medium leading-6 text-gray-900 "
                   >
                     Configure {blockData.label}
                   </Dialog.Title>
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100  focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <XMarkIcon className="h-5 w-5" />
                   </button>
@@ -103,18 +104,22 @@ export function ConfigurationModal({
                       <FormField
                         key={key}
                         name={key}
-                        value={formData[key] !== undefined ? formData[key] : value}
+                        value={
+                          formData[key] !== undefined ? formData[key] : value
+                        }
                         blockType={blockData.type}
-                        onChange={(newValue) => handleFieldChange(key, newValue)}
+                        onChange={(newValue) =>
+                          handleFieldChange(key, newValue)
+                        }
                       />
                     ))}
                   </div>
 
-                  <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-600">
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 ">
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="px-4 py-2 text-sm font-medium text-gray-700  bg-white border border-gray-300  rounded-md hover:bg-gray-50  focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       Cancel
                     </button>

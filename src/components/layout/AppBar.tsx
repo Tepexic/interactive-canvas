@@ -12,7 +12,7 @@ export function AppBar() {
             className="h-8 w-8 object-contain"
           />
           <div>
-            <h1 className="text-3xl font-bold  dark:text-white">
+            <h1 className="text-3xl font-bold  text-white">
               Interactive Canvas
             </h1>
           </div>

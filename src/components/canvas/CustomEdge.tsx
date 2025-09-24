@@ -43,7 +43,7 @@ export function CustomEdge({
           <path
             d="M0,0 L0,4 L6,2 z"
             fill="#6b7280"
-            className="fill-gray-500 dark:fill-gray-400"
+            className="fill-gray-500 "
           />
         </marker>
       </defs>
@@ -55,7 +55,7 @@ export function CustomEdge({
           strokeWidth: 2,
           ...style,
         }}
-        className="stroke-gray-500 dark:stroke-gray-400"
+        className="stroke-gray-500 "
       />
       <EdgeLabelRenderer>
         <div
