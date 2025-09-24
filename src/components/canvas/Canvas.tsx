@@ -7,7 +7,7 @@ import {
   type Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCanvasStore } from "../../stores/canvasStore";
 import { CanvasToolbar } from "./CanvasToolbar";
 import type { CustomNodeData } from "../../types/canvas";
@@ -32,6 +32,8 @@ export default function Canvas() {
     onConnect,
     setSelectedNode,
     updateNodeData,
+    selectedNodeId,
+    isPlaying,
   } = useCanvasStore();
 
   // Modal state
@@ -39,12 +41,20 @@ export default function Canvas() {
   const [selectedNodeData, setSelectedNodeData] =
     useState<CustomNodeData | null>(null);
 
+  // Effect to open modal when a node is selected (from hover panel or click)
+  useEffect(() => {
+    if (selectedNodeId) {
+      const node = nodes.find((n) => n.id === selectedNodeId);
+      if (node) {
+        const nodeData = node.data as CustomNodeData;
+        setSelectedNodeData(nodeData);
+        setIsModalOpen(true);
+      }
+    }
+  }, [selectedNodeId, nodes]);
+
   const onNodeClick = (_event: React.MouseEvent, node: Node) => {
     setSelectedNode(node.id);
-    // Open configuration modal with the node data
-    const nodeData = node.data as CustomNodeData;
-    setSelectedNodeData(nodeData);
-    setIsModalOpen(true);
   };
 
   const onPaneClick = () => {
@@ -54,6 +64,7 @@ export default function Canvas() {
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedNodeData(null);
+    setSelectedNode(null); // Clear the selected node
   };
 
   const handleModalSave = (config: Record<string, unknown>) => {
@@ -86,6 +97,10 @@ export default function Canvas() {
           fitView
           connectionLineType={ConnectionLineType.SmoothStep}
           defaultEdgeOptions={{}}
+          // Disable editing
+          nodesDraggable={!isPlaying}
+          nodesConnectable={!isPlaying}
+          elementsSelectable={!isPlaying}
           className="bg-gray-50 "
         >
           <Background />

@@ -5,12 +5,14 @@ import {
   TrashIcon,
   ArrowTrendingUpIcon,
   ChevronDownIcon,
+  PlayIcon,
 } from "@heroicons/react/24/outline";
-import { useCanvasStore, blockTypes } from "@/stores/canvasStore";
+import { useCanvasStore } from "@/stores/canvasStore";
+import { BLOCK_TYPES } from "@/utils/constants";
 import type { BlockType } from "@/types/canvas";
 
 export function CanvasToolbar() {
-  const { addNode, deleteNode, selectedNodeId } = useCanvasStore();
+  const { addNode, deleteNode, selectedNodeId, setPlaying } = useCanvasStore();
 
   const handleAddNode = (block: BlockType) => {
     // Get current nodes to position new node to the right
@@ -28,6 +30,7 @@ export function CanvasToolbar() {
       data: {
         id: "", // Will be set by addNode function
         ...block,
+        valid: false,
       },
       type: "default",
     });
@@ -37,6 +40,10 @@ export function CanvasToolbar() {
     if (selectedNodeId) {
       deleteNode(selectedNodeId);
     }
+  };
+
+  const handlePlayClick = () => {
+    setPlaying(true);
   };
 
   return (
@@ -66,7 +73,7 @@ export function CanvasToolbar() {
             >
               <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-left rounded-md bg-gray-800 shadow-lg ring-1 ring-gray-600 ring-opacity-5 focus:outline-none">
                 <div className="py-1">
-                  {blockTypes.map((blockType, index) => (
+                  {BLOCK_TYPES.map((blockType, index) => (
                     <Menu.Item key={index}>
                       {({ active }) => (
                         <button
@@ -96,6 +103,13 @@ export function CanvasToolbar() {
               </Menu.Items>
             </Transition>
           </Menu>
+          <button
+            onClick={handlePlayClick}
+            className="inline-flex items-center px-3 py-2 border border-green-600 shadow-sm text-sm leading-4 font-medium rounded-md text-green-400 bg-gray-700 hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400"
+          >
+            <PlayIcon className="w-4 h-4 mr-1" />
+            Execute Flow
+          </button>
           {selectedNodeId && (
             <button
               onClick={handleDeleteSelected}
