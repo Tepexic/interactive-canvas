@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { getPromptSafetyInfo } from "@/utils/sanitizer";
+import { useState, useEffect } from "react";
 
 interface FormFieldProps {
   name: string;
   value: unknown;
   blockType: "amazon" | "gmail" | "ai" | "slack";
   onChange: (value: string | number) => void;
+  onValidationChange?: (
+    fieldName: string,
+    isValid: boolean,
+    error: string
+  ) => void;
 }
 
 // Define dropdown options for different fields
@@ -13,9 +19,6 @@ const DROPDOWN_OPTIONS = {
     metric: ["Units Sold", "Revenue", "Orders"],
     timeframe: [7, 14, 30, 90],
   },
-  slack: {
-    channel: ["#general", "#random", "#news", "custom"],
-  },
 } as const;
 
 export function FormField({
@@ -23,8 +26,21 @@ export function FormField({
   value,
   blockType,
   onChange,
+  onValidationChange,
 }: FormFieldProps) {
   const [error, setError] = useState<string>("");
+
+  // Validate initial value and notify parent
+  useEffect(() => {
+    const stringValue = String(value || "");
+    const validationError = validateField(stringValue);
+    const isValid = validationError === "";
+    setError(validationError);
+
+    if (onValidationChange) {
+      onValidationChange(name, isValid, validationError);
+    }
+  }, [value, name]); // Simplified dependencies
 
   // Determine field type based on the field name and block type
   const getFieldType = (): "text" | "email" | "textarea" | "dropdown" => {
@@ -32,7 +48,7 @@ export function FormField({
     if (name === "message" || name === "prompt") return "textarea";
     if (blockType === "amazon" && (name === "metric" || name === "timeframe"))
       return "dropdown";
-    if (blockType === "slack" && name === "channel") return "dropdown";
+    if (blockType === "slack" && name === "channel") return "text";
     return "text";
   };
 
@@ -42,8 +58,6 @@ export function FormField({
       return DROPDOWN_OPTIONS.amazon.metric;
     if (blockType === "amazon" && name === "timeframe")
       return DROPDOWN_OPTIONS.amazon.timeframe;
-    if (blockType === "slack" && name === "channel")
-      return DROPDOWN_OPTIONS.slack.channel;
     return [];
   };
 
@@ -62,8 +76,17 @@ export function FormField({
       }
     }
 
-    if (name === "prompt" && strValue.length < 10) {
-      return "Prompt must be at least 10 characters long";
+    if (name === "prompt") {
+      if (strValue.length < 10) {
+        return "Prompt must be at least 10 characters long";
+      }
+
+      const safetyInfo = getPromptSafetyInfo(strValue);
+      if (!safetyInfo.isSafe) {
+        return (
+          safetyInfo.reason || "Prompt contains potentially unsafe content"
+        );
+      }
     }
 
     if ((name === "message" || name === "subject") && strValue.length < 1) {
@@ -81,7 +104,14 @@ export function FormField({
   // Handle value changes
   const handleChange = (newValue: string | number) => {
     const validationError = validateField(newValue);
+    const isValid = validationError === "";
     setError(validationError);
+
+    // Notify parent of validation state
+    if (onValidationChange) {
+      onValidationChange(name, isValid, validationError);
+    }
+
     onChange(newValue);
   };
 
@@ -118,9 +148,6 @@ export function FormField({
               {option}
             </option>
           ))}
-          {blockType === "slack" && name === "channel" && (
-            <option value="custom">Custom Channel</option>
-          )}
         </select>
       ) : fieldType === "textarea" ? (
         <textarea

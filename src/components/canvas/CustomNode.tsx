@@ -22,11 +22,12 @@ export function CustomNode({ data, selected }: NodeProps) {
       case "gmail":
         return String(nodeData.config.recipient || "");
       case "amazon":
-        return String(
-          `${nodeData.config.metric || ""} / ${
-            nodeData.config.timeframe || ""
-          } Days`
-        );
+        return nodeData.config.timeframe
+          ? String(
+              `${nodeData.config.metric} / ${nodeData.config.timeframe} Days` ||
+                ""
+            )
+          : "";
       case "slack":
         return String(nodeData.config.channel || "");
       default:
@@ -71,7 +72,7 @@ export function CustomNode({ data, selected }: NodeProps) {
 
   return (
     <div
-      className={`px-4 py-2 shadow-md rounded-md bg-white border-2 min-w-[200px] relative ${
+      className={`px-4 py-2 shadow-md rounded-md bg-white border-2 min-w-[200px] max-w-[300px] relative ${
         selected ? "border-blue-500" : "border-gray-200"
       }`}
       style={{ borderLeftColor: nodeData.color, borderLeftWidth: "4px" }}

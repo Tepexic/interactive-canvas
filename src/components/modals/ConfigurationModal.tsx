@@ -18,6 +18,9 @@ export function ConfigurationModal({
   onClose,
 }: ConfigurationModalProps) {
   const [formData, setFormData] = useState<Record<string, unknown>>({});
+  const [fieldValidations, setFieldValidations] = useState<
+    Record<string, { isValid: boolean; error: string }>
+  >({});
 
   if (!blockData) return null;
 
@@ -30,30 +33,49 @@ export function ConfigurationModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleValidationChange = (
+    fieldName: string,
+    isValid: boolean,
+    error: string
+  ) => {
+    setFieldValidations((prev) => ({
+      ...prev,
+      [fieldName]: { isValid, error },
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation check - ensure all required fields are filled
+    // Check for empty fields
     const hasEmptyFields = Object.values(formData).some(
       (value) =>
         !value || (typeof value === "string" && value.trim().length === 0)
     );
 
     if (hasEmptyFields) {
-      // For now, just show an alert - we can improve this later
-      alert("Please fill in all required fields");
+      return;
+    }
+
+    // Check for field validation errors
+    const hasValidationErrors = Object.values(fieldValidations).some(
+      (validation) => !validation.isValid
+    );
+
+    if (hasValidationErrors) {
       return;
     }
 
     onSave(formData);
     setFormData({});
+    setFieldValidations({});
   };
 
   const handleClose = () => {
-    setFormData({});
     onClose();
+    setFormData({});
+    setFieldValidations({});
   };
-
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={handleClose}>
@@ -111,6 +133,7 @@ export function ConfigurationModal({
                         onChange={(newValue) =>
                           handleFieldChange(key, newValue)
                         }
+                        onValidationChange={handleValidationChange}
                       />
                     ))}
                   </div>
