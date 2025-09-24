@@ -7,10 +7,13 @@ import {
   type Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { useState } from "react";
 import { useCanvasStore } from "../../stores/canvasStore";
 import { CanvasToolbar } from "./CanvasToolbar";
 import { CustomNode } from "./CustomNode";
 import { CustomEdge } from "./CustomEdge";
+import { ConfigurationModal } from "../modals/ConfigurationModal";
+import type { CustomNodeData } from "@/types/canvas";
 
 const nodeTypes = {
   default: CustomNode,
@@ -28,14 +31,36 @@ export default function Canvas() {
     onEdgesChange,
     onConnect,
     setSelectedNode,
+    updateNodeData,
   } = useCanvasStore();
+
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedNodeData, setSelectedNodeData] = useState<CustomNodeData | null>(null);
 
   const onNodeClick = (_event: React.MouseEvent, node: Node) => {
     setSelectedNode(node.id);
+    // Open configuration modal with the node data
+    const nodeData = node.data as CustomNodeData;
+    setSelectedNodeData(nodeData);
+    setIsModalOpen(true);
   };
 
   const onPaneClick = () => {
     setSelectedNode(null);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedNodeData(null);
+  };
+
+  const handleModalSave = (config: Record<string, unknown>) => {
+    if (selectedNodeData) {
+      // Update the node configuration in the store
+      updateNodeData(selectedNodeData.id, { config });
+      handleModalClose();
+    }
   };
 
   return (
@@ -65,6 +90,14 @@ export default function Canvas() {
           <MiniMap className="dark:bg-gray-700" />
         </ReactFlow>
       </div>
+      
+      {/* Configuration Modal */}
+      <ConfigurationModal
+        isOpen={isModalOpen}
+        blockData={selectedNodeData}
+        onSave={handleModalSave}
+        onClose={handleModalClose}
+      />
     </div>
   );
 }
