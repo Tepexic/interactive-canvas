@@ -76,6 +76,7 @@ export interface CanvasState {
   deleteEdge: (edgeId: string) => void;
   updateNodeData: (nodeId: string, data: Partial<CustomNodeData>) => void;
   setSelectedNode: (nodeId: string | null) => void;
+  toggleNodeHandles: (nodeId: string) => void;
 }
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
@@ -221,4 +222,23 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   },
 
   setSelectedNode: (nodeId) => set({ selectedNodeId: nodeId }),
+
+  toggleNodeHandles: (nodeId) => {
+    set({
+      nodes: get().nodes.map((node) =>
+        node.id === nodeId
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                handleOrientation:
+                  node.data.handleOrientation === "horizontal"
+                    ? "vertical"
+                    : "horizontal",
+              },
+            }
+          : node
+      ),
+    });
+  },
 }));
