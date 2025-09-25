@@ -129,7 +129,7 @@ export function CustomNode({ data, selected }: NodeProps) {
           getStateIcon()
         ) : (
           <div className="relative group">
-            <ExclamationTriangleIcon className="w-8 h-8 text-yellow-500 animate-ping" />
+            <ExclamationTriangleIcon className="w-8 h-8 text-yellow-500" />
             {/* Tooltip */}
             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
               Configuration needed, please add the missing fields
