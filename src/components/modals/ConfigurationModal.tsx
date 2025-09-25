@@ -23,7 +23,7 @@ export function ConfigurationModal({
   const [fieldValidations, setFieldValidations] = useState<
     Record<string, { isValid: boolean; error: string }>
   >({});
-  const { alertState, showError, closeAlert } = useAlert();
+  const { alertState, showError } = useAlert();
 
   if (!blockData) return null;
 
