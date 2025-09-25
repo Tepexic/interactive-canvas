@@ -14,9 +14,14 @@ export const STORAGE_VERSION = "1.0.0";
 /**
  * Save canvas state to localStorage with error handling
  */
-export const saveCanvasState = (nodes: Node<CustomNodeData>[], edges: Edge[]): void => {
+export const saveCanvasState = (
+  nodes: Node<CustomNodeData>[],
+  edges: Edge[]
+): void => {
   if (!checkStorageAvailable()) {
-    console.warn("localStorage is not available, canvas state will not be saved");
+    console.warn(
+      "localStorage is not available, canvas state will not be saved"
+    );
     return;
   }
 
@@ -29,9 +34,8 @@ export const saveCanvasState = (nodes: Node<CustomNodeData>[], edges: Edge[]): v
     };
     const serialized = JSON.stringify(dataToSave);
     localStorage.setItem(CANVAS_STORAGE_KEY, serialized);
-    console.log("✅ Canvas state saved successfully");
   } catch (error) {
-    if (error instanceof Error && error.name === 'QuotaExceededError') {
+    if (error instanceof Error && error.name === "QuotaExceededError") {
       console.warn("localStorage quota exceeded, cannot save canvas state");
     } else {
       console.warn("Failed to save canvas state:", error);

@@ -14,7 +14,7 @@ import { AlertDialog } from "@/components/modals/AlertDialog";
 
 export function NodePalette() {
   const { setPlaying, isPlaying } = useCanvasStore();
-  const { alertState, showError, closeAlert } = useAlert();
+  const { alertState, showError } = useAlert();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -25,7 +25,6 @@ export function NodePalette() {
   const handlePlayClick = async () => {
     const result = await setPlaying(true);
     setIsCollapsed(true);
-    console.log("sdasd", result);
     if (!result.success && result.error) {
       showError("Cannot Start Flow", result.error);
     }
@@ -101,7 +100,7 @@ export function NodePalette() {
           <div className="space-y-2">
             <div className="flex items-center justify-between bg-gray-100">
               <p className="text-sm text-gray-700">
-                <strong>Drag & Drop:</strong> Drag any block from this palette
+                <strong>Drag & Drop:</strong> Drag any Block from this palette
                 into your workflow.
               </p>
               <div className="p-3  rounded-lg">
@@ -124,12 +123,7 @@ export function NodePalette() {
         isOpen={alertState.isOpen}
         title={alertState.title}
         message={alertState.message}
-        type={alertState.type}
-        confirmText={alertState.confirmText}
-        cancelText={alertState.cancelText}
-        showCancel={alertState.showCancel}
-        onConfirm={alertState.onConfirm}
-        onCancel={alertState.onCancel || closeAlert}
+        onClose={alertState.onClose}
       />
     </div>
   );

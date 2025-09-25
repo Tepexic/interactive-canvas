@@ -63,6 +63,7 @@ function CanvasContent() {
   }, [selectedNodeId, nodes]);
 
   const onNodeClick = (_event: React.MouseEvent, node: Node) => {
+    if (isPlaying) return;
     setSelectedNode(node.id);
   };
 

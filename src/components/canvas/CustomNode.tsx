@@ -17,7 +17,7 @@ export function CustomNode({ data, selected }: NodeProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const { deleteNode, setSelectedNode, edges } = useCanvasStore();
+  const { deleteNode, setSelectedNode, edges, isPlaying } = useCanvasStore();
 
   const relevantNodeInfo = (): string => {
     switch (nodeData.type) {
@@ -51,10 +51,12 @@ export function CustomNode({ data, selected }: NodeProps) {
   // Button handlers
   const handleDelete = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isPlaying) return;
     setShowDeleteConfirm(true);
   }, []);
 
   const handleConfirmDelete = useCallback(() => {
+    if (isPlaying) return;
     deleteNode(nodeData.id);
     setShowDeleteConfirm(false);
   }, [deleteNode, nodeData.id]);
@@ -154,7 +156,9 @@ export function CustomNode({ data, selected }: NodeProps) {
       {/* Hover Configuration Panel */}
       <div
         className={`absolute right-0 top-0 transform -translate-y-full ml-2 space-y-1 transition-opacity duration-300 ${
-          isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+          isHovered && !isPlaying
+            ? "opacity-100"
+            : "opacity-0 pointer-events-none"
         }`}
       >
         <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-md p-1 border border-gray-200 flex">

@@ -178,12 +178,7 @@ export function ConfigurationModal({
         isOpen={alertState.isOpen}
         title={alertState.title}
         message={alertState.message}
-        type={alertState.type}
-        confirmText={alertState.confirmText}
-        cancelText={alertState.cancelText}
-        showCancel={alertState.showCancel}
-        onConfirm={alertState.onConfirm}
-        onCancel={alertState.onCancel || closeAlert}
+        onClose={alertState.onClose}
       />
     </>
   );
