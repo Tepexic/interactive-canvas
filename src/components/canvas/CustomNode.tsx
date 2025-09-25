@@ -166,8 +166,8 @@ export function CustomNode({ data, selected }: NodeProps) {
           <button
             onClick={handleDelete}
             className="w-6 h-5 flex items-center justify-center rounded text-red-600 hover:bg-red-50 transition-colors duration-200"
-            aria-label="Delete node"
-            title="Delete node"
+            aria-label="Delete block"
+            title="Delete block"
           >
             <TrashIcon className="w-4 h-4" />
           </button>
@@ -176,8 +176,8 @@ export function CustomNode({ data, selected }: NodeProps) {
           <button
             onClick={handleConfigure}
             className="w-6 h-5 flex items-center justify-center rounded text-gray-600 hover:bg-gray-50 transition-colors duration-200"
-            aria-label="Configure node"
-            title="Configure node"
+            aria-label="Configure block"
+            title="Configure block"
           >
             <Cog6ToothIcon className="w-4 h-4" />
           </button>
@@ -187,13 +187,13 @@ export function CustomNode({ data, selected }: NodeProps) {
       {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={showDeleteConfirm}
-        title="Delete Node?"
+        title="Delete Block?"
         message={`Are you sure you want to delete "${nodeData.label}"?${
           getConnectedEdgesCount() > 0
             ? ` This action will also remove ${getConnectedEdgesCount()} connected edge(s).`
             : ""
         }`}
-        confirmText="Delete Node"
+        confirmText="Delete Block"
         cancelText="Cancel"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}

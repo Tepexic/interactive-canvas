@@ -72,7 +72,11 @@ export function NodePalette() {
 
           <button
             onClick={handlePlayClick}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center"
+            className={`px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus:ring-2 flex items-center transition-all duration-200 ${
+              isPlaying
+                ? "text-gray-500 bg-gray-300 cursor-not-allowed"
+                : "text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+            }`}
             disabled={isPlaying}
           >
             <PlayIcon className="w-4 h-4 mr-1" />
@@ -80,14 +84,24 @@ export function NodePalette() {
           </button>
           <button
             onClick={handleToggle}
-            className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+            className={`p-1 rounded-md transition-all duration-200 ${
+              isPlaying ? "cursor-not-allowed opacity-50" : "hover:bg-gray-100"
+            }`}
             title={isCollapsed ? "Expand palette" : "Collapse palette"}
             disabled={isPlaying}
           >
             {isCollapsed ? (
-              <ChevronDownIcon className="w-5 h-5 text-gray-600" />
+              <ChevronDownIcon
+                className={`w-5 h-5 ${
+                  isPlaying ? "text-gray-400" : "text-gray-600"
+                }`}
+              />
             ) : (
-              <ChevronUpIcon className="w-5 h-5 text-gray-600" />
+              <ChevronUpIcon
+                className={`w-5 h-5 ${
+                  isPlaying ? "text-gray-400" : "text-gray-600"
+                }`}
+              />
             )}
           </button>
         </div>
