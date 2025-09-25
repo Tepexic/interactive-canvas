@@ -168,7 +168,7 @@ export const useCanvasStore = create<CanvasState>((set, get) => {
         set({ isPlaying: false });
         return {
           success: false,
-          error: `Node "${invalidNode.data.label}" has invalid configuration. Please configure all nodes before starting.`,
+          error: `Block "${invalidNode.data.label}" has invalid configuration. Please configure all Blocks before starting.`,
         };
       }
 

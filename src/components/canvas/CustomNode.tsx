@@ -17,7 +17,7 @@ export function CustomNode({ data, selected }: NodeProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const { deleteNode, setSelectedNode, edges } = useCanvasStore();
+  const { deleteNode, setSelectedNode, edges, isPlaying } = useCanvasStore();
 
   const relevantNodeInfo = (): string => {
     switch (nodeData.type) {
@@ -51,10 +51,12 @@ export function CustomNode({ data, selected }: NodeProps) {
   // Button handlers
   const handleDelete = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isPlaying) return;
     setShowDeleteConfirm(true);
   }, []);
 
   const handleConfirmDelete = useCallback(() => {
+    if (isPlaying) return;
     deleteNode(nodeData.id);
     setShowDeleteConfirm(false);
   }, [deleteNode, nodeData.id]);
@@ -94,9 +96,13 @@ export function CustomNode({ data, selected }: NodeProps) {
 
   return (
     <div
-      className={`px-4 py-2 shadow-md rounded-md bg-white border-2 min-w-[200px] max-w-[300px] relative ${
+      className={`px-4 py-2 shadow-md rounded-md bg-white border-2 min-w-[200px] max-w-[300px] relative transition-all duration-300 ${
         selected ? "border-blue-500" : "border-gray-200"
-      } ${nodeData.state === "running" && "border-green-600"}`}
+      } ${
+        nodeData.state === "running"
+          ? "border-green-600 shadow-green-400/50 shadow-2xl"
+          : ""
+      }`}
       style={{ borderLeftColor: nodeData.color, borderLeftWidth: "4px" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -131,10 +137,10 @@ export function CustomNode({ data, selected }: NodeProps) {
           <div className="relative group">
             <ExclamationTriangleIcon className="w-8 h-8 text-yellow-500" />
             {/* Tooltip */}
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
               Configuration needed, please add the missing fields
               {/* Tooltip arrow */}
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 rotate-180 border-4 border-transparent border-t-gray-900"></div>
             </div>
           </div>
         )}
@@ -150,7 +156,9 @@ export function CustomNode({ data, selected }: NodeProps) {
       {/* Hover Configuration Panel */}
       <div
         className={`absolute right-0 top-0 transform -translate-y-full ml-2 space-y-1 transition-opacity duration-300 ${
-          isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+          isHovered && !isPlaying
+            ? "opacity-100"
+            : "opacity-0 pointer-events-none"
         }`}
       >
         <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-md p-1 border border-gray-200 flex">
@@ -158,8 +166,8 @@ export function CustomNode({ data, selected }: NodeProps) {
           <button
             onClick={handleDelete}
             className="w-6 h-5 flex items-center justify-center rounded text-red-600 hover:bg-red-50 transition-colors duration-200"
-            aria-label="Delete node"
-            title="Delete node"
+            aria-label="Delete block"
+            title="Delete block"
           >
             <TrashIcon className="w-4 h-4" />
           </button>
@@ -168,8 +176,8 @@ export function CustomNode({ data, selected }: NodeProps) {
           <button
             onClick={handleConfigure}
             className="w-6 h-5 flex items-center justify-center rounded text-gray-600 hover:bg-gray-50 transition-colors duration-200"
-            aria-label="Configure node"
-            title="Configure node"
+            aria-label="Configure block"
+            title="Configure block"
           >
             <Cog6ToothIcon className="w-4 h-4" />
           </button>
@@ -179,13 +187,13 @@ export function CustomNode({ data, selected }: NodeProps) {
       {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={showDeleteConfirm}
-        title="Delete Node?"
+        title="Delete Block?"
         message={`Are you sure you want to delete "${nodeData.label}"?${
           getConnectedEdgesCount() > 0
             ? ` This action will also remove ${getConnectedEdgesCount()} connected edge(s).`
             : ""
         }`}
-        confirmText="Delete Node"
+        confirmText="Delete Block"
         cancelText="Cancel"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}

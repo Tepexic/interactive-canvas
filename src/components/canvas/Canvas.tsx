@@ -6,15 +6,17 @@ import {
   ConnectionLineType,
   ConnectionMode,
   type Node,
+  ReactFlowProvider,
+  useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useCanvasStore } from "../../stores/canvasStore";
-import { CanvasToolbar } from "./CanvasToolbar";
-import type { CustomNodeData } from "../../types/canvas";
+import type { CustomNodeData, BlockType } from "../../types/canvas";
 import { CustomNode } from "./CustomNode";
 import { CustomEdge } from "./CustomEdge";
 import { ConfigurationModal } from "../modals/ConfigurationModal";
+import { NodePalette } from "./NodePalette";
 
 const nodeTypes = {
   default: CustomNode,
@@ -24,7 +26,7 @@ const edgeTypes = {
   default: CustomEdge,
 };
 
-export default function Canvas() {
+function CanvasContent() {
   const {
     nodes,
     edges,
@@ -35,12 +37,18 @@ export default function Canvas() {
     updateNodeData,
     selectedNodeId,
     isPlaying,
+    addNode,
   } = useCanvasStore();
+
+  const { screenToFlowPosition } = useReactFlow();
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedNodeData, setSelectedNodeData] =
     useState<CustomNodeData | null>(null);
+
+  // Drag and drop state
+  const [isDragOver, setIsDragOver] = useState(false);
 
   // Effect to open modal when a node is selected (from hover panel or click)
   useEffect(() => {
@@ -55,6 +63,7 @@ export default function Canvas() {
   }, [selectedNodeId, nodes]);
 
   const onNodeClick = (_event: React.MouseEvent, node: Node) => {
+    if (isPlaying) return;
     setSelectedNode(node.id);
   };
 
@@ -76,6 +85,53 @@ export default function Canvas() {
     }
   };
 
+  // Drag and drop handlers
+  const handleDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+      setIsDragOver(false);
+
+      try {
+        const blockTypeData = event.dataTransfer.getData("application/json");
+        if (!blockTypeData) return;
+
+        const blockType: BlockType = JSON.parse(blockTypeData);
+
+        // Convert screen coordinates to flow coordinates
+        const position = screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
+
+        // Add the new node
+        addNode({
+          position,
+          data: {
+            id: "", // Will be set by addNode function
+            ...blockType,
+            valid: false,
+            state: "idle",
+          },
+          type: "default",
+        });
+      } catch (error) {
+        console.error("Error handling drop:", error);
+      }
+    },
+    [addNode, screenToFlowPosition]
+  );
+
   // Custom function to return node colors for minimap
   const getNodeColor = (node: Node<CustomNodeData>) => {
     return node.data?.color || "#6b7280"; // fallback to gray if no color
@@ -83,8 +139,14 @@ export default function Canvas() {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <CanvasToolbar />
-      <div className="flex-1">
+      {/* Node Palette */}
+      <NodePalette />
+      <div
+        className={`flex-1 transition-all duration-300 `}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -105,11 +167,22 @@ export default function Canvas() {
           nodesDraggable={!isPlaying}
           nodesConnectable={!isPlaying}
           elementsSelectable={!isPlaying}
-          className="bg-gray-50 "
+          className={`bg-gray-50 ${
+            isDragOver ? "bg-blue-50 ring-2 ring-blue-300" : ""
+          }`}
         >
           <Background />
           <Controls />
           <MiniMap nodeColor={getNodeColor} />
+
+          {/* Drop zone indicator */}
+          {isDragOver && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+              <div className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg font-medium">
+                Drop here to add Block
+              </div>
+            </div>
+          )}
         </ReactFlow>
       </div>
 
@@ -121,5 +194,13 @@ export default function Canvas() {
         onClose={handleModalClose}
       />
     </div>
+  );
+}
+
+export default function Canvas() {
+  return (
+    <ReactFlowProvider>
+      <CanvasContent />
+    </ReactFlowProvider>
   );
 }
