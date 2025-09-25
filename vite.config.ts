@@ -3,12 +3,12 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": "/src",
     },
   },
-  base: "/interactive-canvas/",
-});
+  base: command === "build" ? "/interactive-canvas/" : "/",
+}));

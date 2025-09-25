@@ -91,7 +91,7 @@ export function CanvasToolbar() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-left rounded-md bg-gray-800 shadow-lg ring-1 ring-gray-600 ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute right-0 z-10 bg-white mt-2 w-56 origin-top-left rounded-md shadow-lg focus:outline-none">
                   <div className="py-1">
                     {BLOCK_TYPES.map((blockType, index) => (
                       <Menu.Item key={index}>
@@ -100,8 +100,8 @@ export function CanvasToolbar() {
                             onClick={() => handleAddNode(blockType)}
                             className={`${
                               active
-                                ? "bg-gray-700 text-white"
-                                : "text-gray-200"
+                                ? "bg-gray-200 text-gray-900"
+                                : "text-gray-600"
                             } group flex items-center px-4 py-2 text-sm w-full text-left`}
                           >
                             <span className="mr-3">
@@ -115,7 +115,7 @@ export function CanvasToolbar() {
                               <div className="font-medium">
                                 {blockType.label}
                               </div>
-                              <div className="text-xs text-gray-400">
+                              <div className="text-xs text-gray-500">
                                 {blockType.purpose}
                               </div>
                             </div>

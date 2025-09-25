@@ -10,6 +10,7 @@ import type {
 import type { CustomNodeData } from "@/types/canvas";
 import { initializeStore, immediateSave, debouncedSave } from "@/utils/persist";
 import { validateFlowConnectivity } from "@/utils/nodeValidation";
+import { getNodeExecutionOrder } from "@/utils/graphTraversal";
 import {
   mockAIApiCall,
   mockAmazonApiCall,
@@ -191,11 +192,17 @@ export const useCanvasStore = create<CanvasState>((set, get) => {
     },
 
     processNodes: async () => {
-      for (const node of get().nodes) {
+      const nodes = get().nodes;
+      const edges = get().edges;
+
+      for (const node of nodes) {
         get().updateNodeData(node.id, { ...node.data, state: "idle" });
       }
 
-      for (const node of get().nodes) {
+      const orderedNodes = getNodeExecutionOrder(nodes, edges);
+
+      // Process nodes in the correct order
+      for (const node of orderedNodes) {
         const apiCall = apiCallMap[node.data.type];
         if (!apiCall) continue;
 

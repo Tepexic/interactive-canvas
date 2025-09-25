@@ -1,10 +1,10 @@
 import type { Node, Edge } from "@xyflow/react";
 import type { CustomNodeData } from "@/types/canvas";
+import { getIsolatedNodes, hasCycles } from "./graphTraversal";
 
 /**
- * This function checks:
- * - Has nodes
- * - All nodes are connected in a single path
+ * Validates flow connectivity using graph traversal utilities
+ * Now supports both linear and complex flows
  */
 export const validateFlowConnectivity = (
   nodes: Node<CustomNodeData>[],
@@ -18,35 +18,26 @@ export const validateFlowConnectivity = (
     return { isValid: true }; // Single node is always valid
   }
 
-  const connectedNodes = new Set<string>();
+  // Check for cycles using graph traversal utility
+  if (hasCycles(nodes, edges)) {
+    return {
+      isValid: false,
+      error: "Flow contains cycles. Cyclic dependencies are not allowed.",
+    };
+  }
 
-  // Add all nodes that are part of edges
-  edges.forEach((edge) => {
-    connectedNodes.add(edge.source);
-    connectedNodes.add(edge.target);
-  });
-
-  // Check if any nodes are isolated
-  const isolatedNodes = nodes.filter((node) => !connectedNodes.has(node.id));
-
+  // Check for isolated nodes (optional - you can allow or disallow these)
+  const isolatedNodes = getIsolatedNodes(nodes, edges);
   if (isolatedNodes.length > 0) {
     const isolatedNodeNames = isolatedNodes
       .map((node) => `"${node.data.label}"`)
       .join(", ");
-    return {
-      isValid: false,
-      error: `Isolated nodes found: ${isolatedNodeNames}. All nodes must be connected to the flow.`,
-    };
-  }
 
-  // With React Flow's constraints, if all nodes are connected and we have edges,
-  // then we must have a valid linear flow
-  if (edges.length !== nodes.length - 1) {
-    return {
-      isValid: false,
-      error:
-        "Invalid flow structure. The flow must be a single connected path.",
-    };
+    // You can choose to allow isolated nodes or not
+    // For now, let's allow them but warn
+    console.warn(
+      `Isolated nodes found: ${isolatedNodeNames}. They will be executed independently.`
+    );
   }
 
   return { isValid: true };
