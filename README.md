@@ -1,73 +1,107 @@
-# React + TypeScript + Vite
+# Interactive Canvas - Visual Workflow Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, interactive visual workflow builder built with React and TypeScript. Create, configure, and execute automated workflows using a drag-and-drop interface powered by React Flow.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**[Try it live on GitHub Pages](https://tepexic.github.io/interactive-canvas/)**
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **🎨 Visual Workflow Designer** - Drag and drop interface for building automation flows
+- **🔧 Node Configuration** - Configure each workflow step with custom parameters
+- **▶️ Flow Execution** - Execute workflows with real-time status updates and visual feedback
+- **🔄 Smart Validation** - Automatic validation of flow connectivity and node configurations
+- **💾 Persistent Storage** - Automatically saves workflows to local storage
 
-## Expanding the ESLint configuration
+## 🧩 Available Node Types
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **📧 Gmail Block** - Send emails with custom recipients, subjects, and messages
+- **💬 Slack Block** - Send messages to Slack channels
+- **🤖 AI Agent Block** - Process data with AI-powered analysis and recommendations
+- **📊 Amazon Sales Report Block** - Pull sales data with configurable metrics and timeframes
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠️ Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Frontend Framework**: React 18 with TypeScript
+- **Canvas Library**: React Flow (@xyflow/react)
+- **State Management**: Zustand
+- **UI Components**: Headless UI
+- **Icons**: Hero Icons
+- **Styling**: Tailwind CSS
+- **Build Tool**: Vite
+- **Deployment**: GitHub Pages with automated CI/CD
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🏃‍♂️ Getting Started
+
+### Prerequisites
+
+- Node.js 18 or higher
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/Tepexic/interactive-canvas.git
+   cd interactive-canvas
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser** and navigate to `http://localhost:5173`
+
+### Building for Production
+
+```bash
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The built files will be in the `dist` directory.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🎯 How to Use
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **Add Nodes**: Drag blocks from the palette onto the canvas
+2. **Configure Nodes**: Click the gear icon on any node to configure its settings
+3. **Connect Nodes**: Drag from one node's output to another node's input to create connections
+4. **Execute Flow**: Click "Execute Flow" to run your workflow
+5. **Monitor Progress**: Watch real-time status updates as your workflow executes
+
+## 🏗️ Project Structure
+
 ```
+src/
+├── components/          # React components
+│   ├── canvas/         # Canvas-specific components (nodes, edges, palette)
+│   ├── modals/         # Modal dialogs (configuration, alerts, confirmations)
+│   └── layout/         # Layout components (app bar)
+├── hooks/              # Custom React hooks
+├── stores/             # Zustand state management
+├── types/              # TypeScript type definitions
+└── utils/              # Utility functions (validation, storage, etc.)
+```
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🔗 Links
+
+- **[Live Demo](https://tepexic.github.io/interactive-canvas/)**
+- **[GitHub Repository](https://github.com/Tepexic/interactive-canvas)**
+- **[Issues & Feature Requests](https://github.com/Tepexic/interactive-canvas/issues)**
+
+---
+
+Built with ❤️ using React, TypeScript, and React Flow
