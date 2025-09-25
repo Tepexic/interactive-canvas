@@ -10,27 +10,22 @@ import { BLOCK_TYPES } from "@/utils/constants";
 import { DraggableNodeType } from "./DraggableNodeType";
 import { useCanvasStore } from "@/stores/canvasStore";
 import { useAlert } from "@/hooks/useAlert";
+import { AlertDialog } from "@/components/modals/AlertDialog";
 
-interface NodePaletteProps {
-  isVisible?: boolean;
-  onToggle?: () => void;
-}
-
-export function NodePalette({ onToggle }: NodePaletteProps) {
+export function NodePalette() {
   const { setPlaying, isPlaying } = useCanvasStore();
-  const { showError } = useAlert();
+  const { alertState, showError, closeAlert } = useAlert();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
-    onToggle?.();
   };
 
   const handlePlayClick = async () => {
     const result = await setPlaying(true);
     setIsCollapsed(true);
-
+    console.log("sdasd", result);
     if (!result.success && result.error) {
       showError("Cannot Start Flow", result.error);
     }
@@ -78,7 +73,7 @@ export function NodePalette({ onToggle }: NodePaletteProps) {
 
           <button
             onClick={handlePlayClick}
-            className="inline-flex items-center px-3 py-2 border border-green-600 shadow-sm text-sm leading-4 font-medium rounded-md text-green-600 bg-white hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-300"
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center"
             disabled={isPlaying}
           >
             <PlayIcon className="w-4 h-4 mr-1" />
@@ -101,7 +96,7 @@ export function NodePalette({ onToggle }: NodePaletteProps) {
 
       {/* Content */}
       {!isCollapsed && (
-        <div className="p-4 overflow-y-auto h-full">
+        <div className="p-4">
           {/* Node Types */}
           <div className="space-y-2">
             <div className="flex items-center justify-between bg-gray-100">
@@ -123,6 +118,19 @@ export function NodePalette({ onToggle }: NodePaletteProps) {
           </div>
         </div>
       )}
+
+      {/* Alert Dialog */}
+      <AlertDialog
+        isOpen={alertState.isOpen}
+        title={alertState.title}
+        message={alertState.message}
+        type={alertState.type}
+        confirmText={alertState.confirmText}
+        cancelText={alertState.cancelText}
+        showCancel={alertState.showCancel}
+        onConfirm={alertState.onConfirm}
+        onCancel={alertState.onCancel || closeAlert}
+      />
     </div>
   );
 }

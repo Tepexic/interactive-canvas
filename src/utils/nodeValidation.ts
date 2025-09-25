@@ -33,11 +33,10 @@ export const validateFlowConnectivity = (
       .map((node) => `"${node.data.label}"`)
       .join(", ");
 
-    // You can choose to allow isolated nodes or not
-    // For now, let's allow them but warn
-    console.warn(
-      `Isolated nodes found: ${isolatedNodeNames}. They will be executed independently.`
-    );
+    return {
+      isValid: false,
+      error: `Some Blocks are disconnected: ${isolatedNodeNames}. Please include them in your Flow, or delete them.`,
+    };
   }
 
   return { isValid: true };

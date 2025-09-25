@@ -178,7 +178,7 @@ function CanvasContent() {
           {isDragOver && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
               <div className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg font-medium">
-                Drop here to add node
+                Drop here to add Block
               </div>
             </div>
           )}
