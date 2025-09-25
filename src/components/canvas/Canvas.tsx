@@ -12,7 +12,6 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useState, useEffect, useCallback } from "react";
 import { useCanvasStore } from "../../stores/canvasStore";
-import { CanvasToolbar } from "./CanvasToolbar";
 import type { CustomNodeData, BlockType } from "../../types/canvas";
 import { CustomNode } from "./CustomNode";
 import { CustomEdge } from "./CustomEdge";
@@ -39,7 +38,6 @@ function CanvasContent() {
     selectedNodeId,
     isPlaying,
     addNode,
-    isPaletteVisible,
   } = useCanvasStore();
 
   const { screenToFlowPosition } = useReactFlow();
@@ -108,7 +106,7 @@ function CanvasContent() {
         if (!blockTypeData) return;
 
         const blockType: BlockType = JSON.parse(blockTypeData);
-        
+
         // Convert screen coordinates to flow coordinates
         const position = screenToFlowPosition({
           x: event.clientX,
@@ -141,13 +139,9 @@ function CanvasContent() {
   return (
     <div className="w-full h-full flex flex-col">
       {/* Node Palette */}
-      <NodePalette isVisible={isPaletteVisible} />
-      
-      <CanvasToolbar />
-      <div 
-        className={`flex-1 transition-all duration-300 ${
-          isPaletteVisible ? "ml-80" : "ml-0"
-        }`}
+      <NodePalette />
+      <div
+        className={`flex-1 transition-all duration-300 `}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -172,12 +166,14 @@ function CanvasContent() {
           nodesDraggable={!isPlaying}
           nodesConnectable={!isPlaying}
           elementsSelectable={!isPlaying}
-          className={`bg-gray-50 ${isDragOver ? "bg-blue-50 ring-2 ring-blue-300" : ""}`}
+          className={`bg-gray-50 ${
+            isDragOver ? "bg-blue-50 ring-2 ring-blue-300" : ""
+          }`}
         >
           <Background />
           <Controls />
           <MiniMap nodeColor={getNodeColor} />
-          
+
           {/* Drop zone indicator */}
           {isDragOver && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">

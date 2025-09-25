@@ -30,7 +30,6 @@ export interface CanvasState {
   nodes: Node<CustomNodeData>[];
   edges: Edge[];
   selectedNodeId: string | null;
-  isPaletteVisible: boolean;
 
   // Actions
   setNodes: (nodes: Node<CustomNodeData>[]) => void;
@@ -47,8 +46,6 @@ export interface CanvasState {
     playing: boolean
   ) => Promise<{ success: boolean; error?: string }>;
   processNodes: () => void;
-  togglePalette: () => void;
-  setPaletteVisible: (visible: boolean) => void;
 }
 
 export const useCanvasStore = create<CanvasState>((set, get) => {
@@ -59,7 +56,6 @@ export const useCanvasStore = create<CanvasState>((set, get) => {
     nodes: initialState.nodes,
     edges: initialState.edges,
     selectedNodeId: null,
-    isPaletteVisible: true,
 
     setNodes: (nodes) => {
       set({ nodes });
@@ -219,14 +215,6 @@ export const useCanvasStore = create<CanvasState>((set, get) => {
       }
 
       set({ isPlaying: false });
-    },
-
-    togglePalette: () => {
-      set((state) => ({ isPaletteVisible: !state.isPaletteVisible }));
-    },
-
-    setPaletteVisible: (visible) => {
-      set({ isPaletteVisible: visible });
     },
   };
 });
